@@ -39,16 +39,12 @@ public struct LineC
 
         return nearestPoint;
     }
-    public Vector3C NearestPointToLine(LineC line)
-    {
-        return line.origin;
-    }
     #endregion
 
     #region FUNCTIONS
     public static LineC CreateLinePointAPointB(Vector3C pointA, Vector3C pointB)
     {
-        return new LineC(new Vector3C(pointA.x, pointA.y, pointA.z), new Vector3C(pointA.x - pointB.x, pointA.y - pointB.y, pointA.z - pointB.z));
+        return new LineC(pointA, pointB - pointA);
     }
     #endregion
 

@@ -1,4 +1,5 @@
 using System;
+using static UnityEngine.UI.Image;
 
 [System.Serializable]
 public struct PlaneC
@@ -29,10 +30,10 @@ public struct PlaneC
 
         this.position = pointA;
     }
-    public PlaneC(Vector3C n, float D)
+    public PlaneC(float A, float B, float C, float D)
     {
-        this.position = new Vector3C();
-        this.normal = new Vector3C();
+        this.position = new Vector3C(-D / A, -D / B, -D / C);
+        this.normal = new Vector3C(A, B, C);
     }
     #endregion
 
@@ -40,6 +41,32 @@ public struct PlaneC
     #endregion
 
     #region METHODS
+    public (float A, float B, float C, float D) ToEquation()
+    {
+        return (normal.x, normal.y, normal.z, -position.x * normal.x);
+    }
+
+    public Vector3C NearestPoint(Vector3C point)
+    {
+        Vector3C vector = point - position;
+        float dot = Vector3C.Dot(vector, normal);
+        Vector3C nearestPoint = position - normal * dot;
+
+        return nearestPoint;
+    }
+    public Vector3C IntersectionWithLine(LineC line)
+    {
+        return new Vector3C();
+    }
+    public override bool Equals(object obj)
+    {
+        if (obj is PlaneC)
+        {
+            PlaneC other = (PlaneC)obj;
+            return other.normal == this.normal;
+        }
+        return false;
+    }
     #endregion
 
     #region FUNCTIONS
