@@ -1,3 +1,5 @@
+using System;
+
 [System.Serializable]
 public class AA1_ParticleSystem
 {
@@ -37,21 +39,23 @@ public class AA1_ParticleSystem
     }
     public SettingsCollision settingsCollision;
 
-
-
     public struct Particle
     {
         public Vector3C position;
+        public Vector3C positionLast;
+        public Vector3C acceleration;
         public float size;
     }
 
+    Random rnd = new Random();
+
     public Particle[] Update(float dt)
     {
-        Particle[] particles = new Particle[10];
+        Particle[] particles = new Particle[100];
         for (int i = 0; i < particles.Length; ++i)
         {
-            particles[i].position = new Vector3C(-4.5f + i, 0.0f, 0);
-            particles[i].size = 0.1f;
+            particles[i].position = new Vector3C((float)rnd.NextDouble() - 0.5f, (float)rnd.NextDouble() - 0.5f, (float)rnd.NextDouble() - 0.5f);
+            particles[i].size = 0.03f;
         }
         return particles;
     }

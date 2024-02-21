@@ -19,16 +19,26 @@ public struct PlaneC
     public PlaneC(Vector3C position, Vector3C normal)
     {
         this.position = position;
-        this.normal = normal.normalized;
+        this.normal = normal;
     }
     public PlaneC(Vector3C pointA, Vector3C pointB, Vector3C pointC)
     {
         Vector3C vectorAB = new Vector3C(pointA, pointB); // Vector from A to B
         Vector3C vectorAC = new Vector3C(pointA, pointC); // Vector from A to C
 
-        this.normal = Vector3C.Cross(vectorAB, vectorAC).normalized;
+        this.normal = Vector3C.Cross(vectorAB, vectorAC);
 
         this.position = pointA;
+    }
+    public PlaneC(Vector3C n, float D)
+    {
+        float x, y, z;
+        x = -D / -n.x;
+        y = -D / -n.y;
+        z = -D / -n.z;
+
+        this.position = new Vector3C(x, y, z);
+        this.normal = n;
     }
     public PlaneC(float A, float B, float C, float D)
     {
