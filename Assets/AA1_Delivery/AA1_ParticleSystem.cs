@@ -61,7 +61,7 @@ public class AA1_ParticleSystem
         public Vector3C velocity;
         public Vector3C acceleration;
         public Vector3C force;
-        public float particleLife;
+        public float lifeTime;
         public float size;
         public float mass;
         public bool active;
@@ -74,7 +74,7 @@ public class AA1_ParticleSystem
             velocity = Vector3C.zero;
             acceleration = Vector3C.zero;
             force = Vector3C.zero;
-            particleLife = 10.0f;
+            lifeTime = 10.0f;
             size = 0.03f;
             mass = 1.0f;
             active = isActive;
@@ -101,6 +101,21 @@ public class AA1_ParticleSystem
         
 
         return particles;
+    }
+
+    public void ParticlesLifetime(float dt)
+    {
+        for (int i = 0; i < particles.Length; ++i)
+        {
+            if (particles[i].active)
+            {
+                particles[i].lifeTime -= dt;
+                if(particles[i].lifeTime <= 0.0f)
+                {
+                    particles[i].active = false;
+                }
+            }
+        }
     }
 
     public void SolverEuler(float dt)
@@ -139,7 +154,7 @@ public class AA1_ParticleSystem
                 particles[i].positionLast = particles[i].position;
                 //particles[i].force += new Vector3C(0.0f, RandomFloatBetweenRange(settingsCascade.minForce, settingsCascade.maxForce), 0.0f);
                 particles[i].force += new Vector3C(RandomFloatBetweenRange(settingsCascade.minForce , settingsCascade.maxForce) * RandomFloatBetweenRange(0, 1), RandomFloatBetweenRange(settingsCascade.minForce, settingsCascade.maxForce) * RandomFloatBetweenRange(0, 1), RandomFloatBetweenRange(settingsCascade.minForce, settingsCascade.maxForce) * RandomFloatBetweenRange(0, 1));
-                particles[i].particleLife = RandomFloatBetweenRange(settingsCascade.minParticleLife, settingsCascade.maxParticleLife);
+                particles[i].lifeTime = RandomFloatBetweenRange(settingsCascade.minParticleLife, settingsCascade.maxParticleLife);
                 particles[i].isInitialized = true;
             }
         }
