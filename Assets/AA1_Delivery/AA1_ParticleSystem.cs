@@ -7,7 +7,7 @@ public class AA1_ParticleSystem
     [System.Serializable]
     public struct Settings
     {
-        public float pool;
+        public uint pool;
         public Vector3C gravity;
         public float bounce;
         public bool spawnsFromCascade;
@@ -27,6 +27,8 @@ public class AA1_ParticleSystem
         public float maxParticlesPerSecond;
         public float minParticleLife;
         public float maxParticleLife;
+
+        public float spawnTime;
     }
     public SettingsCascade settingsCascade;
 
@@ -65,22 +67,6 @@ public class AA1_ParticleSystem
         public float size;
         public float mass;
         public bool active;
-        public bool isInitialized;
-
-        public Particle(bool isActive)
-        {
-            position = Vector3C.zero;
-            positionLast = Vector3C.zero;
-            velocity = Vector3C.zero;
-            acceleration = Vector3C.zero;
-            force = Vector3C.zero;
-            lifeTime = 10.0f;
-            size = 0.03f;
-            mass = 1.0f;
-            active = isActive;
-            isInitialized = true;
-        }
-
         public void AddForce(Vector3C force)
         {
             this.force += force;
@@ -88,18 +74,28 @@ public class AA1_ParticleSystem
     }
 
     Random rnd = new Random();
-    Particle[] particles = new Particle[1000];
+    Particle[] particles;
+    int poolCascade;
+    float time = 0;
 
     public Particle[] Update(float dt)
     {
+        if (time == 0)
+        {
+            particles = new Particle[settings.pool];
+            poolCascade = 0;
+        }
+
+        ParticlesLifetime(dt);
         if (settings.spawnsFromCascade)
         {
-            InitCascade();
+            SpawnCascade(dt);
+
         }
 
         SolverEuler(dt);
         
-
+        time += dt;
         return particles;
     }
 
@@ -122,7 +118,7 @@ public class AA1_ParticleSystem
     {
         for (int i = 0; i < particles.Length; ++i)
         {
-            if(particles[i].active)
+            if (particles[i].active)
             {
                 particles[i].force += settings.gravity;
                 particles[i].acceleration = particles[i].force / particles[i].mass;
@@ -134,29 +130,58 @@ public class AA1_ParticleSystem
             }
             else
             {
-                particles[i].position = new Vector3C(1000.0f, 1000.0f, 1000.0f);
+                particles[i].position = new Vector3C(100.0f, 100.0f, 100.0f);
                 particles[i].acceleration = Vector3C.zero;
                 particles[i].velocity = Vector3C.zero;
                 particles[i].force = Vector3C.zero;
             }
-            
+
         }
     }
 
-    public void InitCascade()
+    public void SpawnCascade(float dt)
     {
-        for (int i = 0; i < particles.Length; ++i)
+        settingsCascade.spawnTime += (RandomFloatBetweenRange(settingsCascade.maxParticlesPerSecond, settingsCascade.minParticlesPerSecond) * dt);
+        if (settingsCascade.spawnTime < 1.0f)
+            return;
+        settingsCascade.spawnTime -= 1.0f;
+        poolCascade++;
+        if (poolCascade >= settings.pool)
         {
-            if (!particles[i].isInitialized)
-            {
-                particles[i] = new Particle(true);
-                particles[i].position = settingsCascade.PointA + (settingsCascade.PointB - settingsCascade.PointA) * RandomFloatBetweenRange(0, 1);
-                particles[i].positionLast = particles[i].position;
-                //particles[i].force += new Vector3C(0.0f, RandomFloatBetweenRange(settingsCascade.minForce, settingsCascade.maxForce), 0.0f);
-                particles[i].force += new Vector3C(RandomFloatBetweenRange(settingsCascade.minForce , settingsCascade.maxForce) * RandomFloatBetweenRange(0, 1), RandomFloatBetweenRange(settingsCascade.minForce, settingsCascade.maxForce) * RandomFloatBetweenRange(0, 1), RandomFloatBetweenRange(settingsCascade.minForce, settingsCascade.maxForce) * RandomFloatBetweenRange(0, 1));
-                particles[i].lifeTime = RandomFloatBetweenRange(settingsCascade.minParticleLife, settingsCascade.maxParticleLife);
-                particles[i].isInitialized = true;
-            }
+            poolCascade = 0;
+        }
+
+        Vector3C direction = new Vector3C();
+
+        if (settingsCascade.aleatoryDirection)
+        {
+            direction.x = RandomFloatBetweenRange(-1, 1);
+            direction.y = RandomFloatBetweenRange(-1, 1);
+            direction.z = RandomFloatBetweenRange(-1, 1);
+        }
+        else
+        {
+            direction.x = settingsCascade.direction.normalized.x;
+            direction.y = settingsCascade.direction.normalized.y;
+            direction.z = settingsCascade.direction.normalized.z;
+        }
+
+        if (!particles[poolCascade].active)
+        {
+            particles[poolCascade].position = settingsCascade.PointA + (settingsCascade.PointB - settingsCascade.PointA) * RandomFloatBetweenRange(0, 1);
+            particles[poolCascade].positionLast = particles[poolCascade].position;              
+
+            particles[poolCascade].force += new Vector3C(
+                RandomFloatBetweenRange(settingsCascade.minForce , settingsCascade.maxForce) * direction.x, 
+                RandomFloatBetweenRange(settingsCascade.minForce, settingsCascade.maxForce) * direction.y, 
+                RandomFloatBetweenRange(settingsCascade.minForce, settingsCascade.maxForce) * direction.z
+                );
+
+            particles[poolCascade].size = 0.03f;
+            particles[poolCascade].mass = 1.0f;
+
+            particles[poolCascade].lifeTime = RandomFloatBetweenRange(settingsCascade.minParticleLife, settingsCascade.maxParticleLife);
+            particles[poolCascade].active = true;
         }
     }
     
@@ -164,6 +189,7 @@ public class AA1_ParticleSystem
     {
         return (float)rnd.NextDouble() * (max - min) + min;
     }
+
 
     public void Debug()
     {
