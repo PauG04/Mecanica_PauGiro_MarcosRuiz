@@ -27,8 +27,6 @@ public class AA1_ParticleSystem
         public float maxParticlesPerSecond;
         public float minParticleLife;
         public float maxParticleLife;
-
-        public float spawnTime;
     }
     public SettingsCascade settingsCascade;
 
@@ -75,23 +73,24 @@ public class AA1_ParticleSystem
 
     Random rnd = new Random();
     Particle[] particles;
-    int poolCascade;
+    int pool;
     float time = 0;
+    float spawnTime;
 
     public Particle[] Update(float dt)
     {
         if (time == 0)
         {
             particles = new Particle[settings.pool];
-            poolCascade = 0;
+            pool = 0;
+            spawnTime = 0.0f;
         }
 
         ParticlesLifetime(dt);
         if (settings.spawnsFromCascade)
-        {
             SpawnCascade(dt);
-
-        }
+        else
+            SpawnCannon(dt);
 
         SolverEuler(dt);
         
@@ -135,20 +134,19 @@ public class AA1_ParticleSystem
                 particles[i].velocity = Vector3C.zero;
                 particles[i].force = Vector3C.zero;
             }
-
         }
     }
 
     public void SpawnCascade(float dt)
     {
-        settingsCascade.spawnTime += (RandomFloatBetweenRange(settingsCascade.maxParticlesPerSecond, settingsCascade.minParticlesPerSecond) * dt);
-        if (settingsCascade.spawnTime < 1.0f)
+        spawnTime += (RandomFloatBetweenRange(settingsCannon.maxParticlesPerSecond, settingsCascade.minParticlesPerSecond) * dt);
+        if (spawnTime < 1.0f)
             return;
-        settingsCascade.spawnTime -= 1.0f;
-        poolCascade++;
-        if (poolCascade >= settings.pool)
+        spawnTime -= 1.0f;
+        pool++;
+        if (pool >= settings.pool)
         {
-            poolCascade = 0;
+            pool = 0;
         }
 
         Vector3C direction = new Vector3C();
@@ -166,25 +164,56 @@ public class AA1_ParticleSystem
             direction.z = settingsCascade.direction.normalized.z;
         }
 
-        if (!particles[poolCascade].active)
+        if (!particles[pool].active)
         {
-            particles[poolCascade].position = settingsCascade.PointA + (settingsCascade.PointB - settingsCascade.PointA) * RandomFloatBetweenRange(0, 1);
-            particles[poolCascade].positionLast = particles[poolCascade].position;              
+            particles[pool].position = settingsCascade.PointA + (settingsCascade.PointB - settingsCascade.PointA) * RandomFloatBetweenRange(0, 1);
+            particles[pool].positionLast = particles[pool].position;              
 
-            particles[poolCascade].force += new Vector3C(
-                RandomFloatBetweenRange(settingsCascade.minForce , settingsCascade.maxForce) * direction.x, 
+            particles[pool].force += new Vector3C(
+                RandomFloatBetweenRange(settingsCannon.minForce , settingsCascade.maxForce) * direction.x, 
                 RandomFloatBetweenRange(settingsCascade.minForce, settingsCascade.maxForce) * direction.y, 
                 RandomFloatBetweenRange(settingsCascade.minForce, settingsCascade.maxForce) * direction.z
                 );
 
-            particles[poolCascade].size = 0.03f;
-            particles[poolCascade].mass = 1.0f;
+            particles[pool].size = 0.03f;
+            particles[pool].mass = 1.0f;
 
-            particles[poolCascade].lifeTime = RandomFloatBetweenRange(settingsCascade.minParticleLife, settingsCascade.maxParticleLife);
-            particles[poolCascade].active = true;
+            particles[pool].lifeTime = RandomFloatBetweenRange(settingsCascade.minParticleLife, settingsCascade.maxParticleLife);
+            particles[pool].active = true;
         }
     }
-    
+
+    public void SpawnCannon(float dt)
+    {
+        spawnTime += (RandomFloatBetweenRange(settingsCannon.maxParticlesPerSecond, settingsCannon.minParticlesPerSecond) * dt);
+        if (spawnTime < 1.0f)
+            return;
+        spawnTime -= 1.0f;
+        pool++;
+        if (pool >= settings.pool)
+        {
+            pool = 0;
+        }
+
+        if (!particles[pool].active)
+        {
+            particles[pool].position = settingsCannon.Start;
+            particles[pool].positionLast = particles[pool].position;
+
+            particles[pool].force += new Vector3C(
+                RandomFloatBetweenRange(settingsCannon.minForce, settingsCannon.maxForce) * (float)Math.Sin((double)settingsCannon.angle * (Math.PI / 180.0f)),
+                RandomFloatBetweenRange(settingsCannon.minForce, settingsCannon.maxForce),
+                RandomFloatBetweenRange(settingsCannon.minForce, settingsCannon.maxForce) * (float)Math.Cos((double)settingsCannon.angle * (Math.PI / 180.0f))
+                );
+
+            particles[pool].size = 0.03f;
+            particles[pool].mass = 1.0f;
+
+            particles[pool].lifeTime = RandomFloatBetweenRange(settingsCannon.minParticleLife, settingsCannon.maxParticleLife);
+            particles[pool].active = true;
+        }
+    }
+
     public float RandomFloatBetweenRange(float min, float max)
     {
         return (float)rnd.NextDouble() * (max - min) + min;

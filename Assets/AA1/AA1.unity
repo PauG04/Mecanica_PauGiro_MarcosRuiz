@@ -182,27 +182,26 @@ MonoBehaviour:
       aleatoryDirection: 1
       minForce: 800
       maxForce: 1100
-      minParticlesPerSecond: 1
-      maxParticlesPerSecond: 1
+      minParticlesPerSecond: 30
+      maxParticlesPerSecond: 50
       minParticleLife: 0.2
       maxParticleLife: 0.5
-      spawnTime: 0
     settingsCannon:
       Start:
         x: 0
         y: 0
         z: 0
       Direction:
-        x: 0
-        y: 0
-        z: 0
-      angle: 0
-      minForce: 0
-      maxForce: 0
-      minParticlesPerSecond: 0
-      maxParticlesPerSecond: 0
-      minParticleLife: 0
-      maxParticleLife: 0
+        x: 1
+        y: 1
+        z: 1
+      angle: 20
+      minForce: 1000
+      maxForce: 2000
+      minParticlesPerSecond: 50
+      maxParticlesPerSecond: 50
+      minParticleLife: 3
+      maxParticleLife: 3
     settingsCollision:
       planes:
       - position:
