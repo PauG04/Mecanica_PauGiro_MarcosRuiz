@@ -164,7 +164,7 @@ MonoBehaviour:
         x: 0
         y: -9.81
         z: 0
-      bounce: 1
+      bounce: 0.5
       spawnsFromCascade: 1
       particleMass: 1
       particleSize: 0.03
@@ -184,8 +184,8 @@ MonoBehaviour:
       aleatoryDirection: 0
       minForce: 200
       maxForce: 300
-      minParticlesPerSecond: 100
-      maxParticlesPerSecond: 200
+      minParticlesPerSecond: 200
+      maxParticlesPerSecond: 100
       minParticleLife: 2
       maxParticleLife: 5
     settingsCannon:
@@ -200,8 +200,8 @@ MonoBehaviour:
       angle: 20
       minForce: 200
       maxForce: 300
-      minParticlesPerSecond: 100
-      maxParticlesPerSecond: 200
+      minParticlesPerSecond: 200
+      maxParticlesPerSecond: 100
       minParticleLife: 2
       maxParticleLife: 5
     settingsCollision:
@@ -270,7 +270,7 @@ MonoBehaviour:
           y: 0.75
           z: 0.2
         radius: 0.1
-      collisionFactor: 0.08
+      collisionFactor: 0.05
 --- !u!4 &83351503
 Transform:
   m_ObjectHideFlags: 0

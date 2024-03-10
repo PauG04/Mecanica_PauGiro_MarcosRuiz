@@ -136,6 +136,7 @@ public class AA1_ParticleSystem
                 particles[i].force = Vector3C.zero;
 
                 CalculateCollision(i);
+
             }
             else
             {
@@ -149,7 +150,7 @@ public class AA1_ParticleSystem
 
     public void SpawnCascade(float dt)
     {
-        spawnTime += (RandomFloatBetweenRange(settingsCannon.maxParticlesPerSecond, settingsCascade.minParticlesPerSecond) * dt);
+        spawnTime += (RandomFloatBetweenRange(settingsCascade.maxParticlesPerSecond, settingsCascade.minParticlesPerSecond) * dt);
         if (spawnTime < 1.0f)
             return;
         spawnTime -= 1.0f;
@@ -264,12 +265,10 @@ public class AA1_ParticleSystem
     public void CollisionReaction(int indexParticle, int indexPlane)
     {
         float isolatedDotProduct = (particles[indexParticle].velocity * settingsCollision.planes[indexPlane].normal) / settingsCollision.planes[indexPlane].normal.magnitude;
-        Vector3C vector = settingsCollision.planes[indexPlane].normal / settingsCollision.planes[indexPlane].normal.magnitude;
 
-        Vector3C normalVelocity = (vector * isolatedDotProduct);
+        Vector3C normalVelocity = settingsCollision.planes[indexPlane].normal * isolatedDotProduct;
         Vector3C tangentVelocity = particles[indexParticle].velocity - normalVelocity;
-        particles[indexParticle].velocity = -normalVelocity + tangentVelocity;
-        particles[indexParticle].velocity *= settings.bounce;
+        particles[indexParticle].velocity = (-normalVelocity + tangentVelocity) * settings.bounce;
     }
 
 
