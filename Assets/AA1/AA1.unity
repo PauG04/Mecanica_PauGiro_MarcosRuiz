@@ -180,12 +180,12 @@ MonoBehaviour:
         y: 1
         z: 1
       aleatoryDirection: 1
-      minForce: 800
-      maxForce: 1100
-      minParticlesPerSecond: 1
-      maxParticlesPerSecond: 1
-      minParticleLife: 0.2
-      maxParticleLife: 0.5
+      minForce: 200
+      maxForce: 300
+      minParticlesPerSecond: 100
+      maxParticlesPerSecond: 200
+      minParticleLife: 1
+      maxParticleLife: 1
       spawnTime: 0
     settingsCannon:
       Start:
@@ -214,6 +214,14 @@ MonoBehaviour:
           y: 1
           z: 0
       - position:
+          x: 0
+          y: 0.5
+          z: 0
+        normal:
+          x: 0
+          y: 1
+          z: 0
+      - position:
           x: 0.5
           y: 0
           z: 0
@@ -221,6 +229,30 @@ MonoBehaviour:
           x: 1
           y: 0
           z: 0
+      - position:
+          x: 0
+          y: 0
+          z: -0.5
+        normal:
+          x: 0
+          y: 0
+          z: 1
+      - position:
+          x: -0.5
+          y: 0
+          z: 0
+        normal:
+          x: 1
+          y: 0
+          z: 0
+      - position:
+          x: 0
+          y: 0
+          z: 0.5
+        normal:
+          x: 0
+          y: 0
+          z: 1
       spheres:
       - position:
           x: 0
@@ -425,14 +457,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 552815159}
-  m_LocalRotation: {x: 0.0000031068917, y: 0.00000526756, z: -0.7071068, w: -0.70710677}
-  m_LocalPosition: {x: 0.0000005779548, y: 0, z: 0.49999544}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1175434161}
   m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 359.999, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!23 &552815161
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -711,14 +743,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1866929248}
-  m_LocalRotation: {x: 0.50000155, y: 0.500003, z: -0.49999857, w: -0.49999693}
-  m_LocalPosition: {x: -0.4999972, y: 0, z: -0.0000067679803}
+  m_LocalRotation: {x: -0.5, y: -0.5, z: 0.5, w: 0.5}
+  m_LocalPosition: {x: -0.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1175434161}
   m_RootOrder: -1
-  m_LocalEulerAnglesHint: {x: 0, y: 269.999, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 90}
 --- !u!23 &1866929250
 MeshRenderer:
   m_ObjectHideFlags: 0

@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Numerics;
+using UnityEditor.ShaderGraph;
 using static AA1_ParticleSystem;
+using static AA2_Rigidbody;
 
 [System.Serializable]
 public class AA1_ParticleSystem
@@ -127,6 +131,8 @@ public class AA1_ParticleSystem
 
                 particles[i].positionLast = particles[i].position;
                 particles[i].force = Vector3C.zero;
+
+                CalculateCollision(i);
             }
             else
             {
@@ -135,6 +141,7 @@ public class AA1_ParticleSystem
                 particles[i].velocity = Vector3C.zero;
                 particles[i].force = Vector3C.zero;
             }
+           
 
         }
     }
@@ -188,6 +195,48 @@ public class AA1_ParticleSystem
     public float RandomFloatBetweenRange(float min, float max)
     {
         return (float)rnd.NextDouble() * (max - min) + min;
+    }
+
+    public void CalculateCollision(int index)
+    {
+        for (int i = 0; i < settingsCollision.planes.Length; i++)
+        {
+            float distance;
+
+            float aComponent = settingsCollision.planes[i].ToEquation().A;
+            float bComponent = settingsCollision.planes[i].ToEquation().B;
+            float cComponent = settingsCollision.planes[i].ToEquation().C;
+            float dComponent = settingsCollision.planes[i].ToEquation().D;
+
+            float upValue = (aComponent * particles[index].position.x) +
+                (bComponent * particles[index].position.y) +
+                (cComponent * particles[index].position.z) +
+                dComponent;
+
+            if (upValue < 0.0f)
+            {
+                upValue *= -1.0f;
+            }
+
+            float downValue = (float)Math.Sqrt((aComponent * aComponent) + (bComponent * bComponent) + (cComponent * cComponent));
+
+            distance = upValue / downValue;
+
+            if (distance <= 0.08)
+            {
+                CollisionReaction(index, i);
+            }
+        }    
+    }
+
+    public void CollisionReaction(int indexParticle, int indexPlane)
+    {
+        float isolatedDotProduct = (particles[indexParticle].velocity * settingsCollision.planes[indexPlane].normal) / settingsCollision.planes[indexPlane].normal.magnitude;
+        Vector3C vector = settingsCollision.planes[indexPlane].normal / settingsCollision.planes[indexPlane].normal.magnitude;
+
+        Vector3C normalVelocity = (vector * isolatedDotProduct);
+        Vector3C tangentVelocity = particles[indexParticle].velocity - normalVelocity;
+        particles[indexParticle].velocity = -normalVelocity + tangentVelocity;
     }
 
 

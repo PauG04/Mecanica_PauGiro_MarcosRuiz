@@ -53,7 +53,8 @@ public struct PlaneC
     #region METHODS
     public (float A, float B, float C, float D) ToEquation()
     {
-        return (normal.x, normal.y, normal.z, -position.x * normal.x);
+        //return (normal.x, normal.y, normal.z, -position.x * normal.x);
+        return (normal.x, normal.y, normal.z, -Vector3C.Dot(normal, position));
     }
 
     public Vector3C NearestPoint(Vector3C point)
