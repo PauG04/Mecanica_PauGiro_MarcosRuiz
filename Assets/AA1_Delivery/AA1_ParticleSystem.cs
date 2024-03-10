@@ -15,6 +15,8 @@ public class AA1_ParticleSystem
         public Vector3C gravity;
         public float bounce;
         public bool spawnsFromCascade;
+        public float particleMass;
+        public float particleSize;
     }
     public Settings settings;
 
@@ -55,6 +57,8 @@ public class AA1_ParticleSystem
         public PlaneC[] planes;
         public SphereC[] spheres;
         public CapsuleC[] capsules;
+
+        public float collisionFactor;
     }
     public SettingsCollision settingsCollision;
 
@@ -181,8 +185,8 @@ public class AA1_ParticleSystem
                 RandomFloatBetweenRange(settingsCascade.minForce, settingsCascade.maxForce) * direction.z
                 );
 
-            particles[pool].size = 0.03f;
-            particles[pool].mass = 1.0f;
+            particles[pool].size = settings.particleSize;
+            particles[pool].mass = settings.particleMass;
 
             particles[pool].lifeTime = RandomFloatBetweenRange(settingsCascade.minParticleLife, settingsCascade.maxParticleLife);
             particles[pool].active = true;
@@ -212,8 +216,8 @@ public class AA1_ParticleSystem
                 RandomFloatBetweenRange(settingsCannon.minForce, settingsCannon.maxForce) * (float)Math.Cos((double)settingsCannon.angle * (Math.PI / 180.0f))
                 );
 
-            particles[pool].size = 0.03f;
-            particles[pool].mass = 1.0f;
+            particles[pool].size = settings.particleSize;
+            particles[pool].mass = settings.particleMass;
 
             particles[pool].lifeTime = RandomFloatBetweenRange(settingsCannon.minParticleLife, settingsCannon.maxParticleLife);
             particles[pool].active = true;
@@ -236,21 +240,21 @@ public class AA1_ParticleSystem
             float cComponent = settingsCollision.planes[i].ToEquation().C;
             float dComponent = settingsCollision.planes[i].ToEquation().D;
 
-            float upValue = (aComponent * particles[index].position.x) +
+            float dividend = (aComponent * particles[index].position.x) +
                 (bComponent * particles[index].position.y) +
                 (cComponent * particles[index].position.z) +
                 dComponent;
 
-            if (upValue < 0.0f)
+            if (dividend < 0.0f)
             {
-                upValue *= -1.0f;
+                dividend *= -1.0f;
             }
 
-            float downValue = (float)Math.Sqrt((aComponent * aComponent) + (bComponent * bComponent) + (cComponent * cComponent));
+            float divider = (float)Math.Sqrt((aComponent * aComponent) + (bComponent * bComponent) + (cComponent * cComponent));
 
-            distance = upValue / downValue;
+            distance = dividend / divider;
 
-            if (distance <= 0.08)
+            if (distance <= settingsCollision.collisionFactor)
             {
                 CollisionReaction(index, i);
             }
@@ -265,6 +269,7 @@ public class AA1_ParticleSystem
         Vector3C normalVelocity = (vector * isolatedDotProduct);
         Vector3C tangentVelocity = particles[indexParticle].velocity - normalVelocity;
         particles[indexParticle].velocity = -normalVelocity + tangentVelocity;
+        particles[indexParticle].velocity *= settings.bounce;
     }
 
 
