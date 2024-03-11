@@ -165,7 +165,7 @@ MonoBehaviour:
         y: -9.81
         z: 0
       bounce: 1
-      spawnsFromCascade: 1
+      spawnsFromCascade: 0
       particleMass: 1
       particleSize: 0.03
     settingsCascade:
@@ -197,13 +197,13 @@ MonoBehaviour:
         x: 1
         y: 1
         z: 1
-      angle: 60
+      angle: 0
       minForce: 300
       maxForce: 500
-      minParticlesPerSecond: 50
+      minParticlesPerSecond: 10
       maxParticlesPerSecond: 10
-      minParticleLife: 2
-      maxParticleLife: 5
+      minParticleLife: 1
+      maxParticleLife: 1
     settingsCollision:
       planes:
       - position:

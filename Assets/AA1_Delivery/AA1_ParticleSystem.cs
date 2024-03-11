@@ -211,10 +211,11 @@ public class AA1_ParticleSystem
             particles[pool].position = settingsCannon.Start;
             particles[pool].positionLast = particles[pool].position;
 
+
             particles[pool].force += new Vector3C(
-                RandomFloatBetweenRange(settingsCannon.minForce, settingsCannon.maxForce) * (float)Math.Sin((double)settingsCannon.angle * (Math.PI / 180.0f)),
+                RandomFloatBetweenRange(settingsCannon.minForce, settingsCannon.maxForce) * (float)Math.Sin(RandomFloatBetweenRange(-settingsCannon.angle * ((float)Math.PI / 180.0f), settingsCannon.angle * ((float)Math.PI / 180.0f))),
                 RandomFloatBetweenRange(settingsCannon.minForce, settingsCannon.maxForce),
-                RandomFloatBetweenRange(settingsCannon.minForce, settingsCannon.maxForce) * (float)Math.Cos((double)settingsCannon.angle * (Math.PI / 180.0f))
+                RandomFloatBetweenRange(settingsCannon.minForce, settingsCannon.maxForce) * (float)Math.Sin(RandomFloatBetweenRange(-settingsCannon.angle * ((float)Math.PI / 180.0f), settingsCannon.angle * ((float)Math.PI / 180.0f)))
                 );
 
             particles[pool].size = settings.particleSize;
