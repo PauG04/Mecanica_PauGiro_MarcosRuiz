@@ -127,12 +127,13 @@ public class AA1_ParticleSystem
         {
             if (particles[i].active)
             {
+                particles[i].positionLast = particles[i].position;
+
                 particles[i].force += settings.gravity;
                 particles[i].acceleration = particles[i].force / particles[i].mass;
                 particles[i].velocity += particles[i].acceleration * dt;
                 particles[i].position += particles[i].velocity * dt;
-
-                particles[i].positionLast = particles[i].position;
+             
                 particles[i].force = Vector3C.zero;
 
                 CalculateCollision(i);
@@ -235,15 +236,24 @@ public class AA1_ParticleSystem
     {
         for (int i = 0; i < settingsCollision.planes.Length; i++)
         {
-            if (settingsCollision.planes[i].DistanceToPoint(particles[index].position) <= settingsCollision.collisionFactor)
+            double distance;
+
+            Vector3C Vector = particles[index].position - settingsCollision.planes[i].position;
+            distance = Vector3C.Dot(settingsCollision.planes[i].normal, Vector);
+
+            if(distance < 0)
             {
                 CollisionReaction(index, i);
             }
-        }    
+        }
+        
     }
 
     public void CollisionReaction(int indexParticle, int indexPlane)
     {
+        LineC line = new LineC(particles[indexParticle].positionLast, particles[indexParticle].position);
+        particles[indexParticle].position = settingsCollision.planes[indexPlane].IntersectionWithLine(line);
+
         float isolatedDotProduct = (particles[indexParticle].velocity * settingsCollision.planes[indexPlane].normal) / settingsCollision.planes[indexPlane].normal.magnitude;
 
         Vector3C normalVelocity = settingsCollision.planes[indexPlane].normal * isolatedDotProduct;
