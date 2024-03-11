@@ -234,28 +234,7 @@ public class AA1_ParticleSystem
     {
         for (int i = 0; i < settingsCollision.planes.Length; i++)
         {
-            float distance;
-
-            float aComponent = settingsCollision.planes[i].ToEquation().A;
-            float bComponent = settingsCollision.planes[i].ToEquation().B;
-            float cComponent = settingsCollision.planes[i].ToEquation().C;
-            float dComponent = settingsCollision.planes[i].ToEquation().D;
-
-            float dividend = (aComponent * particles[index].position.x) +
-                (bComponent * particles[index].position.y) +
-                (cComponent * particles[index].position.z) +
-                dComponent;
-
-            if (dividend < 0.0f)
-            {
-                dividend *= -1.0f;
-            }
-
-            float divider = (float)Math.Sqrt((aComponent * aComponent) + (bComponent * bComponent) + (cComponent * cComponent));
-
-            distance = dividend / divider;
-
-            if (distance <= settingsCollision.collisionFactor)
+            if (settingsCollision.planes[i].DistanceToPoint(particles[index].position) <= settingsCollision.collisionFactor)
             {
                 CollisionReaction(index, i);
             }

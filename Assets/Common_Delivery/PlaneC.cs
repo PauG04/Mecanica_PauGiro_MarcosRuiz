@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 using static UnityEngine.UI.Image;
 
 [System.Serializable]
@@ -71,6 +72,16 @@ public struct PlaneC
         float distance = Vector3C.Dot(normal, position - line.origin) / Vector3C.Dot(normal, line.direction);
         return line.origin + line.direction * distance;
     }
+    public float DistanceToPoint(Vector3C point)
+    {
+        float planeEquation = ToEquation().A * point.x + ToEquation().B * point.y + ToEquation().C * point.z + ToEquation().D;
+
+        if (normal.magnitude == 0.0f)
+            return 0.0f;
+
+        return Math.Abs(planeEquation) / normal.magnitude;
+    }
+
     public override bool Equals(object obj)
     {
         if (obj is PlaneC)
