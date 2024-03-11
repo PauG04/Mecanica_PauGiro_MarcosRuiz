@@ -65,9 +65,11 @@ public struct PlaneC
 
         return nearestPoint;
     }
+
     public Vector3C IntersectionWithLine(LineC line)
     {
-        return new Vector3C();
+        float distance = Vector3C.Dot(normal, position - line.origin) / Vector3C.Dot(normal, line.direction);
+        return line.origin + line.direction * distance;
     }
     public override bool Equals(object obj)
     {
