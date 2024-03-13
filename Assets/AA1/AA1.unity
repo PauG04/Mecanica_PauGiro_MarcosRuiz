@@ -184,8 +184,8 @@ MonoBehaviour:
       aleatoryDirection: 0
       minForce: 300
       maxForce: 500
-      minParticlesPerSecond: 1
-      maxParticlesPerSecond: 1
+      minParticlesPerSecond: 10
+      maxParticlesPerSecond: 10
       minParticleLife: 2
       maxParticleLife: 5
     settingsCannon:
@@ -259,7 +259,7 @@ MonoBehaviour:
           x: 0
           y: 0
           z: 0
-        radius: 0.3
+        radius: 0.2
       capsules:
       - positionA:
           x: 0

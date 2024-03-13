@@ -236,13 +236,14 @@ public class AA1_ParticleSystem
     {
         for (int i = 0; i < settingsCollision.planes.Length; i++)
         {
-            double distance;
+            double distancePlane;
+            double distanceSphere;
 
             Vector3C Vector = particles[index].position - settingsCollision.planes[i].position;
-            distance = Vector3C.Dot(settingsCollision.planes[i].normal, Vector);
+            distancePlane = Vector3C.Dot(settingsCollision.planes[i].normal, Vector);
 
-            if(distance < 0)
-            {
+            if(distancePlane < 0)
+            { 
                 CollisionReaction(index, i);
             }
         }
