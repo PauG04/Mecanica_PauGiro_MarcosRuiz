@@ -165,7 +165,7 @@ MonoBehaviour:
         y: -9.81
         z: 0
       bounce: 0.9
-      spawnsFromCascade: 1
+      spawnsFromCascade: 0
       particleMass: 1
       particleSize: 0.03
     settingsCascade:
@@ -256,19 +256,19 @@ MonoBehaviour:
           z: -1
       spheres:
       - position:
-          x: 0
-          y: 0
-          z: 0
+          x: 0.26
+          y: -0.39
+          z: 0.4
         radius: 0.2
       capsules:
       - positionA:
           x: 0
-          y: 0.24
-          z: 0.28
+          y: -0.28
+          z: 0.43
         positionB:
           x: 0
-          y: 0.75
-          z: 0.2
+          y: -0.28
+          z: -0.36
         radius: 0.1
       collisionFactor: 0.08
 --- !u!4 &83351503

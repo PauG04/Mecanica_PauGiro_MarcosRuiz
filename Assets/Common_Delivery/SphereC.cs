@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 
 [System.Serializable]
 public struct SphereC
@@ -24,9 +25,10 @@ public struct SphereC
     #endregion
 
     #region METHODS
-    public bool IsInside()
+    public PlaneC IsInside(Vector3C point)
     {
-        return true;
+        Vector3C planeNormal = new Vector3C(position, point);
+        return new PlaneC(planeNormal.normalized * radius + position, planeNormal.normalized);
     }
     #endregion
 

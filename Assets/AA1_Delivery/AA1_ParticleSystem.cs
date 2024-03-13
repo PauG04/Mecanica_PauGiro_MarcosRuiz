@@ -237,29 +237,61 @@ public class AA1_ParticleSystem
         for (int i = 0; i < settingsCollision.planes.Length; i++)
         {
             double distancePlane;
-            double distanceSphere;
 
-            Vector3C Vector = particles[index].position - settingsCollision.planes[i].position;
-            distancePlane = Vector3C.Dot(settingsCollision.planes[i].normal, Vector);
+            Vector3C vector = particles[index].position - settingsCollision.planes[i].position;
+            distancePlane = Vector3C.Dot(settingsCollision.planes[i].normal, vector);
 
-            if(distancePlane < 0)
-            { 
-                CollisionReaction(index, i);
+            if(distancePlane <= 0)
+            {
+                CollisionReactionPlanes(index, settingsCollision.planes[i]);
             }
         }
-        
+
+        for (int i = 0; i < settingsCollision.spheres.Length; i++)
+        {
+            double distanceSphere;
+            PlaneC plane = settingsCollision.spheres[i].IsInside(particles[index].position);
+
+            Vector3C vector = particles[index].position - plane.position;
+            distanceSphere = Vector3C.Dot(plane.normal, vector);
+
+            if (distanceSphere <= 0)
+            {
+                CollisionReactionPlanes(index, plane);
+            }
+        }
+
+        for (int i = 0; i < settingsCollision.capsules.Length; i++)
+        {
+            double distanceCapsule;
+            PlaneC plane = settingsCollision.capsules[i].IsInside(particles[index].position);
+
+            Vector3C vector = particles[index].position - plane.position;
+            distanceCapsule = Vector3C.Dot(plane.normal, vector);
+
+            if (distanceCapsule <= 0)
+            {
+                CollisionReactionPlanes(index, plane);
+            }
+        }
     }
 
-    public void CollisionReaction(int indexParticle, int indexPlane)
+    public void CollisionReactionPlanes(int indexParticle, PlaneC plane)
     {
         LineC line = new LineC(particles[indexParticle].positionLast, particles[indexParticle].position);
-        particles[indexParticle].position = settingsCollision.planes[indexPlane].IntersectionWithLine(line);
+        particles[indexParticle].position = plane.IntersectionWithLine(line);
 
-        float isolatedDotProduct = (particles[indexParticle].velocity * settingsCollision.planes[indexPlane].normal) / settingsCollision.planes[indexPlane].normal.magnitude;
+        float isolatedDotProduct = (particles[indexParticle].velocity * plane.normal) / plane.normal.magnitude;
 
-        Vector3C normalVelocity = settingsCollision.planes[indexPlane].normal * isolatedDotProduct;
+        Vector3C normalVelocity = plane.normal * isolatedDotProduct;
         Vector3C tangentVelocity = particles[indexParticle].velocity - normalVelocity;
         particles[indexParticle].velocity = (-normalVelocity + tangentVelocity) * settings.bounce;
+    }
+
+    public void CollisionReactionSphere(int indexParticle, int indexSphere) 
+    {
+        LineC line = new LineC(particles[indexParticle].positionLast, particles[indexParticle].position);
+       // particles[indexParticle].position = settingsCollision.spheres[indexSphere].IntersectionWithLine(line);
     }
 
 
