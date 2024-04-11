@@ -22,6 +22,8 @@ public class AA2_Cloth
     [System.Serializable]
     public struct ClothSettings
     {
+        public float structuralJellyLike;
+
         [Header("Structural Spring")]
         public float structuralElasticCoef;
         public float structuralDamptCoef;
@@ -51,23 +53,19 @@ public class AA2_Cloth
         public Vector3C lastPosition;
         public Vector3C actualPosition;
         public Vector3C velocity;
-        public bool isColliding;
         public Vertex(Vector3C _position)
         {
             this.actualPosition = _position;
             this.lastPosition = _position;
             this.velocity = new Vector3C(0, 0, 0);
-            isColliding = false;
         }
         public void Euler(Vector3C force, float dt)
         {
             lastPosition = actualPosition;
-            if(!isColliding)
-                velocity += force * dt;
+            velocity += force * dt;
             actualPosition += velocity * dt;
-        
         }
-        public void DetectCollision(SphereC sphere, float coeficient)
+        public void DetectCollision(SphereC sphere)
         {
             double distanceSphere;
             PlaneC plane = sphere.IsInside(actualPosition);
@@ -77,19 +75,15 @@ public class AA2_Cloth
 
             if (distanceSphere <= 0)
             {
-                CollisionReaction(plane, coeficient);
-            }
-            else
-            {
-                isColliding = false;
+                CollisionReaction(plane, sphere);
             }
         }
 
-        public void CollisionReaction(PlaneC plane, float coeficient)
+        public void CollisionReaction(PlaneC plane, SphereC sphere)
         {
-            LineC line = new LineC(lastPosition, actualPosition);
-            actualPosition = plane.IntersectionWithLine(line);
-            isColliding = true;
+            Vector3C particleDirection = (actualPosition - sphere.position).normalized;
+            Vector3C collisionPoint = sphere.position + particleDirection * (sphere.radius);
+            actualPosition = collisionPoint;
 
             float isolatedDotProduct = (velocity * plane.normal) / plane.normal.magnitude;
 
@@ -113,10 +107,9 @@ public class AA2_Cloth
             if (i != 0 && i != xVertices - 1)
             {
                 points[i].Euler(settings.gravity + forces[i], dt);
-                points[i].DetectCollision(settingsCollision.sphere, settingsCollision.collisionCoef);
+                points[i].DetectCollision(settingsCollision.sphere);
             }               
         }
-
     }
 
     private void ApplyForces(int xVertices, Vector3C[] forces)
@@ -141,9 +134,11 @@ public class AA2_Cloth
         {
             float shearMagnitude = (points[currentParticle - xVertices + 1].actualPosition - points[currentParticle].actualPosition).magnitude
                                              - clothSettings.shearSpringL;
+            if (shearMagnitude > clothSettings.structuralJellyLike * MathF.Sqrt(2))
+                return;
+
             Vector3C shearForceVector = (points[currentParticle - xVertices + 1].actualPosition
                                 - points[currentParticle].actualPosition).normalized * shearMagnitude * clothSettings.shearElasticCoef;
-
 
             Vector3C shearDampingForce = (-points[currentParticle - xVertices + 1].velocity + points[currentParticle].velocity) * clothSettings.shearDamptCoef;
             Vector3C shearSpringForce = shearForceVector * clothSettings.shearElasticCoef - shearDampingForce;
@@ -165,6 +160,9 @@ public class AA2_Cloth
         {
             float structMagnitudeY = (points[currentParticle - xVertices].actualPosition - points[currentParticle].actualPosition).magnitude
                                              - clothSettings.structuralSpringL;
+            if (structMagnitudeY > clothSettings.structuralJellyLike)
+                return;
+
             Vector3C structForceVector = (points[currentParticle - xVertices].actualPosition
                                 - points[currentParticle].actualPosition).normalized * structMagnitudeY * clothSettings.structuralElasticCoef;
 
@@ -183,6 +181,8 @@ public class AA2_Cloth
         {
             float structMagnitudeX = (points[currentParticle - 1].actualPosition - points[currentParticle].actualPosition).magnitude
                                              - clothSettings.structuralSpringL;
+            if (structMagnitudeX > clothSettings.structuralJellyLike)
+                return;
             Vector3C structForceVector = (points[currentParticle - 1].actualPosition
                                 - points[currentParticle].actualPosition).normalized * structMagnitudeX * clothSettings.structuralElasticCoef;
 
@@ -200,6 +200,9 @@ public class AA2_Cloth
         {
             float bendMagnitudeY = (points[currentParticle - xVertices * 2].actualPosition - points[currentParticle].actualPosition).magnitude
                                              - clothSettings.bendingSpringL;
+            if (bendMagnitudeY > clothSettings.structuralJellyLike * 2)
+                return;
+
             Vector3C bendForceVector = (points[currentParticle - xVertices * 2].actualPosition
                                 - points[currentParticle].actualPosition).normalized * bendMagnitudeY * clothSettings.bendingElasticCoef;
 
@@ -218,6 +221,8 @@ public class AA2_Cloth
         {
             float bendMagnitudeX = (points[currentParticle - 2].actualPosition - points[currentParticle].actualPosition).magnitude
                                              - clothSettings.bendingSpringL;
+            if (bendMagnitudeX > clothSettings.structuralJellyLike * 2)
+                return;
             Vector3C bendForceVector = (points[currentParticle - 2].actualPosition
                                 - points[currentParticle].actualPosition).normalized * bendMagnitudeX * clothSettings.bendingElasticCoef;
 
