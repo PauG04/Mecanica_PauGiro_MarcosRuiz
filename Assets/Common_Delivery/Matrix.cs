@@ -23,25 +23,23 @@ public struct MatrixC
     #region OPERATORS
     public static Vector3C operator *(MatrixC m, Vector3C a)
     {
-
-        return new Vector3C(m.data[0,0] * a.x + m.data[0,1] * a.y + m.data[0,2] * a.z,
+        return new Vector3C(m.data[0, 0] * a.x + m.data[0, 1] * a.y + m.data[0, 2] * a.z,
             m.data[1, 0] * a.x + m.data[1, 1] * a.y + m.data[1, 2] * a.z,
-            m.data[2, 0] * a.x + m.data[2, 1] * a.y + m.data[2, 2] * a.z)
+            m.data[2, 0] * a.x + m.data[2, 1] * a.y + m.data[2, 2] * a.z);
     }
 
     public static MatrixC operator *(MatrixC m1, MatrixC m2)
     {
-        float[] results = new float[m1.size * m1.size];
+        float[,] results = new float[m1.size, m1.size];
+
         for (int i = 0; i < m1.size; i++)
         {
-            for (int j = 0; j < m1.size; j++)
+            for (int j = 0; j < m2.size; j++)
             {
-                int suma = 0;
                 for (int k = 0; k < m1.size; k++)
                 {
-                    suma += (int)(m1.data[i * m1.size + k] * m2.data[k * m1.size + j]);
+                    results[i, j] += m1.data[i, k] * m2.data[k, j];
                 }
-                results[i * m1.size + j] = suma;
             }
         }
 
@@ -61,41 +59,48 @@ public struct MatrixC
         {
             return 0;
         }
-        float determinate;
+        float determinate =
+            ((m.data[0, 0] * m.data[1, 1] * m.data[2, 2]) + (m.data[0, 1] * m.data[1, 2] * m.data[2, 0]) + (m.data[0, 2] * m.data[1, 0] * m.data[2, 1])) -
+            ((m.data[0, 2] * m.data[1, 1] * m.data[2, 0]) + (m.data[0, 0] * m.data[1, 2] * m.data[2, 1]) + (m.data[0, 1] * m.data[1, 0] * m.data[2, 2]));
 
-        determinate = (m.data[0] * m.data[4] * m.data[8] + m.data[1] * m.data[5] * m.data[6] + m.data[2] * m.data[3] * m.data[7]) - 
-            (m.data[2] * m.data[4] * m.data[6] + m.data[0] * m.data[5] * m.data[7] + m.data[1] * m.data[3] * m.data[8]);
 
         return determinate;
     }
 
     public MatrixC Transposed(MatrixC m)
     {
-        MatrixC matrix = new MatrixC(m.data);
+        MatrixC transposed = new MatrixC();
 
-        m.data[0] = matrix.data[0];
-        m.data[1] = matrix.data[3];
-        m.data[2] = matrix.data[6];
+        for (int i = 0; i < m.size; i++)
+        {
+            for (int j = 0; j < m.size; j++)
+            {
+                transposed.data[j, i] = m.data[i, j];
+            }
+        }
 
-        m.data[3] = matrix.data[1];
-        m.data[4] = matrix.data[4];
-        m.data[5] = matrix.data[7];
-
-        m.data[6] = matrix.data[2];
-        m.data[7] = matrix.data[5];
-        m.data[8] = matrix.data[8];
-
-        return m;
+        return transposed;
     }
 
     #endregion
 
     #region FUNCTIONS
-    public MatrixC Inverse()
+    public MatrixC Inverse(MatrixC m)
     {
+        MatrixC inverse = new MatrixC();
+        float invDet = 1.0f / Determintate3x3(m);
 
+        inverse.data[0, 0] = (m.data[1, 1] * m.data[2, 2] - m.data[1, 2] * m.data[2, 1]) * invDet;
+        inverse.data[0, 1] = (m.data[0, 2] * m.data[2, 1] - m.data[0, 1] * m.data[2, 2]) * invDet * -1;
+        inverse.data[0, 2] = (m.data[0, 1] * m.data[1, 2] - m.data[0, 2] * m.data[1, 1]) * invDet;
+        inverse.data[1, 0] = (m.data[1, 2] * m.data[2, 0] - m.data[1, 0] * m.data[2, 2]) * invDet * -1;
+        inverse.data[1, 1] = (m.data[0, 0] * m.data[2, 2] - m.data[0, 2] * m.data[2, 0]) * invDet;
+        inverse.data[1, 2] = (m.data[0, 2] * m.data[1, 0] - m.data[0, 0] * m.data[1, 2]) * invDet * -1;
+        inverse.data[2, 0] = (m.data[1, 0] * m.data[2, 1] - m.data[1, 1] * m.data[2, 0]) * invDet;
+        inverse.data[2, 1] = (m.data[0, 1] * m.data[2, 0] - m.data[0, 0] * m.data[2, 1]) * invDet * -1;
+        inverse.data[2, 2] = (m.data[0, 0] * m.data[1, 1] - m.data[0, 1] * m.data[1, 0]) * invDet;
 
-        return new MatrixC(data);
+        return Transposed(inverse);
     }
     #endregion
 
