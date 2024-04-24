@@ -173,11 +173,80 @@ MonoBehaviour:
   - settings:
       gravity:
         x: 0
+        y: -9.81
+        z: 0
+      bounce: 0.5
+    settingsCollision:
+      planes:
+      - position:
+          x: 0
+          y: -0.5
+          z: 0
+        normal:
+          x: 0
+          y: 1
+          z: 0
+    crb:
+      position:
+        x: 0
         y: 0
         z: 0
-      bounce: 0
-    settingsCollision:
-      planes: []
+      lastPosition:
+        x: 0
+        y: 0
+        z: 0
+      euler:
+        x: 0
+        y: 0
+        z: 0
+      force:
+        x: 0
+        y: 0
+        z: 0
+      size:
+        x: 0.1
+        y: 0.1
+        z: 0.1
+      linearVelocity:
+        x: 0
+        y: 0
+        z: 0
+      angularVelocity:
+        x: 0
+        y: 20
+        z: 0
+      acceleration:
+        x: 0
+        y: 0
+        z: 0
+      inertialTension: 0
+      density: 1
+      mass: 0.1
+      vertexPositions:
+      - x: 0
+        y: 0
+        z: 0
+      - x: 0
+        y: 0
+        z: 0
+      - x: 0
+        y: 0
+        z: 0
+      - x: 0
+        y: 0
+        z: 0
+      - x: 0
+        y: 0
+        z: 0
+      - x: 0
+        y: 0
+        z: 0
+      - x: 0
+        y: 0
+        z: 0
+      - x: 0
+        y: 0
+        z: 0
 --- !u!1 &498822787
 GameObject:
   m_ObjectHideFlags: 0
