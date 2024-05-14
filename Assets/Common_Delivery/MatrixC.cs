@@ -111,19 +111,38 @@ public struct MatrixC
 
     public static MatrixC RotateX(float angle)
     {
-        MatrixC rotateX = new MatrixC(new float[3,3]);
+        MatrixC matrixRotationX = new MatrixC(new float[,]
+        {
+           { 1.0f, 0.0f, 0.0f, },
+           { 0.0f, (float)Math.Cos(angle), (float)Math.Sin(-angle) },
+           { 0.0f, (float)Math.Sin(angle), (float)Math.Cos(angle) }
+        });
 
-        rotateX.data[0, 0] = 1;
-        rotateX.data[0, 1] = 0;
-        rotateX.data[0, 2] = 0;
-        rotateX.data[1, 0] = 0;
-        rotateX.data[1, 1] = (float)Math.Cos(angle);
-        rotateX.data[1, 2] = (float)Math.Sin(-angle);
-        rotateX.data[2, 0] = 0;
-        rotateX.data[2, 1] = (float)Math.Sin(angle);
-        rotateX.data[2, 2] = (float)Math.Cos(angle);
+        return matrixRotationX;
+    }
 
-        return rotateX;
+    public static MatrixC RotateY(float angle)
+    {
+        MatrixC matrixRotationY = new MatrixC(new float[,]
+        {
+           { (float)Math.Cos(angle), 0.0f, (float)Math.Sin(angle), },
+           { 0.0f, 1.0f, 0.0f },
+           { (float)Math.Sin(-angle), 0.0f, (float)Math.Cos(angle) }
+        });
+
+        return matrixRotationY;
+    }
+
+    public static MatrixC RotateZ(float angle)
+    {
+        MatrixC matrixRotationZ = new MatrixC(new float[,]
+        {
+           { (float)Math.Cos(angle), (float)Math.Sin(-angle), 0.0f, },
+           { (float)Math.Sin(angle), (float)Math.Cos(angle), 0.0f },
+           { 0.0f, 0.0f, 1.0f }
+        });
+
+        return matrixRotationZ;
     }
     #endregion
 
