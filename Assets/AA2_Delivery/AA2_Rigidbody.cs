@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -28,6 +29,7 @@ public class AA2_Rigidbody
         public Vector3C position;
         public Vector3C lastPosition;
         public Vector3C euler;
+        public Vector3C lastEuler;
         public Vector3C force;
         public Vector3C size;
         public Vector3C linearVelocity;
@@ -45,6 +47,7 @@ public class AA2_Rigidbody
             lastPosition = Vector3C.zero;
             size = _size;
             euler = _euler;
+            lastEuler = Vector3C.zero;
             force = Vector3C.zero;
             linearVelocity = Vector3C.zero;
             angularVelocity = Vector3C.zero;
@@ -53,18 +56,11 @@ public class AA2_Rigidbody
             density = 1f;
             mass = .1f;
             vertexPositions = new Vector3C[8];
-
-            vertexPositions[0] = new Vector3C(-size.x / 2, size.y / 2, size.z / 2);
-            vertexPositions[1] = new Vector3C(-size.x / 2, -size.y / 2, size.z / 2);
-            vertexPositions[2] = new Vector3C(-size.x / 2, size.y / 2, -size.z / 2);
-            vertexPositions[3] = new Vector3C(-size.x / 2, -size.y / 2, -size.z / 2);
-            vertexPositions[4] = new Vector3C(size.x / 2, size.y / 2, size.z / 2);
-            vertexPositions[5] = new Vector3C(size.x / 2, -size.y / 2, size.z / 2);
-            vertexPositions[6] = new Vector3C(size.x / 2, size.y / 2, -size.z / 2);
-            vertexPositions[7] = new Vector3C(size.x / 2, -size.y / 2, -size.z / 2);
+            SetVertexPosition();
         }
         public void Euler(float dt, Vector3C gravity)
         {
+            lastEuler = euler;
             lastPosition = position;
             acceleration = (force / mass) + gravity;
             linearVelocity += acceleration * dt;
@@ -104,8 +100,26 @@ public class AA2_Rigidbody
 
         public void Update(float dt, Vector3C gravity, PlaneC[] planes, float bounce)
         {
+            SetVertexPosition();
             Euler(dt, gravity);
             CalculateCollision(planes, bounce);
+        }
+
+        public void SetVertexPosition()
+        {
+            vertexPositions[0] = new Vector3C(-size.x / 2, size.y / 2, size.z / 2);
+            vertexPositions[1] = new Vector3C(-size.x / 2, -size.y / 2, size.z / 2);
+            vertexPositions[2] = new Vector3C(-size.x / 2, size.y / 2, -size.z / 2);
+            vertexPositions[3] = new Vector3C(-size.x / 2, -size.y / 2, -size.z / 2);
+            vertexPositions[4] = new Vector3C(size.x / 2, size.y / 2, size.z / 2);
+            vertexPositions[5] = new Vector3C(size.x / 2, -size.y / 2, size.z / 2);
+            vertexPositions[6] = new Vector3C(size.x / 2, size.y / 2, -size.z / 2);
+            vertexPositions[7] = new Vector3C(size.x / 2, -size.y / 2, -size.z / 2);
+
+            for (int i = 0; i < vertexPositions.Length; i++)
+            {
+                vertexPositions[i] = position +  MatrixC.Rotate(euler) * vertexPositions[i];
+            }
         }
 
         public Vector3C[] GetVertex()
@@ -113,7 +127,7 @@ public class AA2_Rigidbody
             return vertexPositions;
         }
     }
-    public CubeRigidbody crb = new CubeRigidbody(Vector3C.zero, new(.1f,.1f,.1f), Vector3C.zero);
+    public CubeRigidbody crb = new CubeRigidbody(Vector3C.zero, new(.1f,.1f,.1f), new(0.0f, 0.0f, 0.0f));
     public void Update(float dt)
     {
         crb.Update(dt, settings.gravity, settingsCollision.planes, settings.bounce);

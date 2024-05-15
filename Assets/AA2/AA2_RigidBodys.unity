@@ -173,9 +173,9 @@ MonoBehaviour:
   - settings:
       gravity:
         x: 0
-        y: -9.81
+        y: 0
         z: 0
-      bounce: 0.8
+      bounce: 1
     settingsCollision:
       planes:
       - position:
@@ -203,11 +203,11 @@ MonoBehaviour:
           y: 0
           z: 0
       - position:
-          x: 0.5
+          x: -0.5
           y: 0
           z: 0
         normal:
-          x: -1
+          x: 1
           y: 0
           z: 0
       - position:
@@ -239,6 +239,10 @@ MonoBehaviour:
         x: 0
         y: 0
         z: 0
+      lastEuler:
+        x: 0
+        y: 0
+        z: 0
       force:
         x: 0
         y: 0
@@ -252,9 +256,9 @@ MonoBehaviour:
         y: 0
         z: 0
       angularVelocity:
-        x: 0
+        x: 10
         y: 0
-        z: 0
+        z: 10
       acceleration:
         x: 0
         y: 0

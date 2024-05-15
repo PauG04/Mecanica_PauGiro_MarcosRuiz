@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.CompilerServices;
+using UnityEngine.UIElements;
 
 [System.Serializable]
 public struct MatrixC
@@ -48,10 +49,6 @@ public struct MatrixC
     #endregion
 
     #region METHODS
-    public void Rotate()
-    {
-
-    }
 
     public float Determintate3x3(MatrixC m)
     {
@@ -109,41 +106,28 @@ public struct MatrixC
         return Transposed(inverse);
     }
 
-    public static MatrixC RotateX(float angle)
+    public static MatrixC Rotate(Vector3C rotation)
     {
-        MatrixC matrixRotationX = new MatrixC(new float[,]
+        rotation.x *= (float)Math.PI / 180.0f;
+        rotation.y *= (float)Math.PI / 180.0f;
+        rotation.z *= (float)Math.PI / 180.0f;
+
+        MatrixC matrixRotation = new MatrixC(new float[,]
         {
-           { 1.0f, 0.0f, 0.0f, },
-           { 0.0f, (float)Math.Cos(angle), (float)Math.Sin(-angle) },
-           { 0.0f, (float)Math.Sin(angle), (float)Math.Cos(angle) }
+           {    (float)Math.Cos(rotation.y)*(float)Math.Cos(rotation.z),
+                (float)Math.Sin(rotation.x)*(float)Math.Sin(rotation.y)*(float)Math.Cos(rotation.z) - (float)Math.Cos(rotation.x)*(float)Math.Sin(rotation.z),
+                (float)Math.Cos(rotation.x)*(float)Math.Sin(rotation.y)*(float)Math.Cos(rotation.z) + (float)Math.Sin(rotation.x)*(float)Math.Sin(rotation.z) },
+           {    (float)Math.Cos(rotation.y) * (float)Math.Sin(rotation.z),
+                (float)Math.Sin(rotation.x)*(float)Math.Sin(rotation.y)*(float)Math.Sin(rotation.z) + (float)Math.Cos(rotation.x)*(float)Math.Cos(rotation.z),
+                (float)Math.Cos(rotation.x)*(float)Math.Sin(rotation.y)*(float)Math.Sin(rotation.z) -  (float)Math.Sin(rotation.x)*(float)Math.Cos(rotation.z) },
+           {    -(float)Math.Sin(rotation.y),
+                (float)Math.Sin(rotation.x)*(float)Math.Cos(rotation.y),
+                (float)Math.Cos(rotation.x)*(float)Math.Cos(rotation.y) }
         });
 
-        return matrixRotationX;
+        return matrixRotation;
     }
 
-    public static MatrixC RotateY(float angle)
-    {
-        MatrixC matrixRotationY = new MatrixC(new float[,]
-        {
-           { (float)Math.Cos(angle), 0.0f, (float)Math.Sin(angle), },
-           { 0.0f, 1.0f, 0.0f },
-           { (float)Math.Sin(-angle), 0.0f, (float)Math.Cos(angle) }
-        });
-
-        return matrixRotationY;
-    }
-
-    public static MatrixC RotateZ(float angle)
-    {
-        MatrixC matrixRotationZ = new MatrixC(new float[,]
-        {
-           { (float)Math.Cos(angle), (float)Math.Sin(-angle), 0.0f, },
-           { (float)Math.Sin(angle), (float)Math.Cos(angle), 0.0f },
-           { 0.0f, 0.0f, 1.0f }
-        });
-
-        return matrixRotationZ;
-    }
     #endregion
 
 }
